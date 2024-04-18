@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        window.onload = function () {
+            let button = document.getElementById('btn');
+            var output = document.getElementById('outputpart');
+            button.setAttribute('disabled', '');
+            button.classList.add("disable");
+            output.classList.add('output_partnone');
+        }
+
+        var todayDate = "";
+        var takenDate = "";
+        var amount;
+        var rateOfIntrest = 2;
+        var totalAmount;
+        var intrestAmount;
+
+        function todayDatef() {
+            todayDate = document.getElementById('todayDate').value;
+            todayDate === "" ? todayDateMessage.innerHTML = "Today date is Required *" : todayDateMessage.innerHTML = "";
+            document.getElementById('takenDate').setAttribute("max", todayDate)
+            document.getElementById('takenDate').removeAttribute('disabled');
+        }
+
+        function takenDatef() {
+            if(todayDate !== ""){
+            takenDate = document.getElementById('takenDate').value;
+            takenDate === "" ? takenDateMessage.innerHTML = "Taken date is Required *" : takenDateMessage.innerHTML = "";
+            }
+            else{
+                document.getElementById('takenDate').setAttribute('disabled', '');
+                todayDateMessage.innerHTML = "Today date is Required *";
+            }
+        }
+
+        function amountTaken() {
+            let changeAmount = document.getElementById('takenAmount').value.trim();
+            amount = Number(changeAmount);
+            if (amount >= 100 && (todayDate !== "" || takenDate !== "")) {
+                document.getElementById('takenAmountMessage').innerHTML = "";
+                if (todayDate && takenDate) {
+                    document.getElementById('btn').removeAttribute('disabled');
+                    document.getElementById('btn').classList.remove("disable");
+                    document.getElementById('btn').classList.add('btn');
+                }
+            }
+            else if (Number(changeAmount) < 100) {
+                document.getElementById('takenAmountMessage').innerHTML = "Enter > 100 amount *"
+                const buttons = document.getElementById('btn');
+                buttons.setAttribute('disabled', '');
+                buttons.classList.remove('btn');
+                buttons.classList.add('disable')
+            }
+        }
+
+        function Calculate() {
+            takenDate = new Date(takenDate);
+            todayDate = new Date(todayDate);
+            var years = todayDate.getFullYear() - takenDate.getFullYear();
+            var months = todayDate.getMonth() - takenDate.getMonth();
+            var days = todayDate.getDate() - takenDate.getDate();
+            if (months < 0 || (months === 0 && days < 0)) {
+                years--;
+                months += 12;
+            }
+            if (days < 0) {
+                var prevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 0);
+                days += prevMonth.getDate();
+                months--;
+            }
+            if(years >= 0){
+                document.getElementById('year').innerHTML = years + "y-";
+                document.getElementById('month').innerHTML = months + "m-";
+                document.getElementById('days').innerHTML = days + "d";
+                var output = document.getElementById('outputpart');
+                output.classList.remove('output_partnone');
+                years = years * 12;
+                months = months + years;
+                var permonth = (amount / 100)*2;
+                 var perDay = permonth / 30;
+                 var remaingDaysAmount = perDay * days;
+                intrestAmount = (months * permonth) + remaingDaysAmount;
+                var totalAmount = (intrestAmount + amount).toFixed(2);
+                document.getElementById('intrest').innerHTML = intrestAmount.toFixed(2);
+                document.getElementById('total_amount').innerHTML = totalAmount;
+
+            }
+        }
+
+    </script>
+    <style>
+        body {
+            background-color: rgb(244, 251, 251);
+        }
+
+        .main {
+            width: 100%;
+            height: 100vh;
+            justify-content: space-between;
+            display: flex;
+        }
+
+        .input_Part {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output_part {
+            width: 40%;
+            /* //background-color: rgb(255, 255, 255); */
+            height: 100vh;
+        }
+
+        .main .input_Part div {
+            margin-top: 20px;
+        }
+
+        .box {
+            height: 80px;
+        }
+
+        .input_Part input[type="date"],
+        #takenAmount {
+            width: 98%;
+            padding: 2px;
+            height: 30px;
+            font-size: medium;
+            font-size: 15px;
+        }
+
+        .disable {
+            background-color: rgb(188, 234, 188);
+            width: 100%;
+            height: 40px;
+            font-weight: 900;
+            color: white;
+            border-style: ridge;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            height: 40px;
+            font-weight: 900;
+            color: white;
+            background-color: rgb(54, 191, 54);
+            border-style: ridge;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        #todayDateMessage,
+        #takenDateMessage,
+        #takenAmountMessage {
+            color: red;
+        }
+        .output{
+            display: flex;
+            flex-direction: column;
+            margin-top: 80px;
+            position:absolute;
+        }
+        .time, .intrest, .total_amount {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        .showtime{
+            display:flex;
+        }
+        .output_partnone {
+            display: none;
+        }
+
+        @media screen and (max-width:700px) {
+            .main {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .input_Part {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .output_part {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            input[type="date"] {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="input_Part">
+            <div class="box">
+                <label for="todayDate">TodayDate:</label>
+                <input type="date" id="todayDate" onchange="todayDatef()" onclick="todayDatef()" />
+                <p id="todayDateMessage"></p>
+            </div>
+            <div class="box">
+                <label for="takenDate">Taken:</label>
+                <input type="date" id="takenDate" onchange="takenDatef()" onclick="takenDatef()" />
+                <p id="takenDateMessage"></p>
+            </div>
+            <div class="box">
+                <label for="takenAmount">Amount:</label>
+                <input type="number" id="takenAmount" placeholder="Enter amount" onkeyup="amountTaken()" />
+                <p id="takenAmountMessage"></p>
+            </div>
+            <div>
+                <button type="submit" id="btn" onclick="Calculate()">Submit</button>
+            </div>
+        </div>
+        <div class="output_part" id = "outputpart">
+            <h1 style="text-align:center;">Note : <i> Defaultly 2% rate of intrest added</i></h1>
+            <div class = "output">
+                <div class="time">
+                    <h3>Time :</h3>
+                    <div class ="showtime">
+                    <h3 id="year"></h3>
+                    <h3 id ="month"></h3>
+                    <h3 id ="days"></h3>
+                    </div>
+                </div>
+
+                <div class="intrest">
+                    <h3>Intrest :</h3>
+                    <h3 id="intrest"></h3>
+                </div>
+
+                <div class="total_amount">
+                    <h3>Total Amount :</h3>
+                    <h3 id="total_amount"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
